@@ -1,4 +1,4 @@
-# syn-search
+# Syn-Search
 Optimal Drug Synthesis Condition Searching Conversational AI
 
 Drug discovery often involves meticulous chemical compound synthesis. Medicinal chemists adjust synthesis conditions incrementally to find the optimal state. While using known conditions from literature seems logical, chemical reactions are highly sensitive. Even minor changes in reagents or solvents can alter the outcome significantly.
