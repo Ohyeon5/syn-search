@@ -3,7 +3,7 @@ Optimal Drug Synthesis Condition Searching Conversational AI
 
 Drug discovery often involves meticulous chemical compound synthesis. Medicinal chemists adjust synthesis conditions incrementally to find the optimal state. While using known conditions from literature seems logical, chemical reactions are highly sensitive. Even minor changes in reagents or solvents can alter the outcome significantly.
 
-<img src="figs/frontpage.png" alt="syn-search" style="width:200px;"/>
+<img src="figs/frontpage.png" alt="syn-search" width=200px class="center"/>
 
 This project aims to create a chat-based search platform using pre-trained LLMs (Hugging Face) for chemists to effortlessly find experimental conditions.
 
