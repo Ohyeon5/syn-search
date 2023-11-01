@@ -1,0 +1,5 @@
+{
+    "reactions":[
+        {"name": "reductive amination", "reagents": ["reacgent1", "reagent2"], "reactants": ["reactants"], "conditions": "conditions"}
+    ]
+}
