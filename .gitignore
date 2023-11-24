@@ -1,3 +1,9 @@
+# syn-search specific
+*.git/
+dummy/
+data/
+*secret*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
