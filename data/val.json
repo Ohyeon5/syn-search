@@ -1,5 +1,15 @@
 {
     "reactions":[
-        {"name": "reductive amination", "reagents": ["reacgent1", "reagent2"], "reactants": ["reactants"], "conditions": "conditions"}
+        {"reactionSmiles": "test_smiles",
+        "reagents": ["reactant1", "reactant2"],
+        "reagent": ["reactants"],
+        "solvent": "solvent",
+        "temperature": "temperature",
+        "pressure": "pressure",
+        "time": 60,
+        "time unit": "min",
+        "stirring_shaking": "stirring",
+        "atomosphere": "argon"
+        }
     ]
 }
