@@ -8,8 +8,8 @@ Drug discovery often involves meticulous chemical compound synthesis. Medicinal 
 This project aims to create a chat-based search platform using pre-trained LLMs (Hugging Face) for chemists to effortlessly find experimental conditions.
 
 ## Project Details
-Develop a chat-based search platform using pre-trained Language Models (LMs) from [hugging face](hhttps://huggingface.co/meta-llama), tailored for chemists to efficiently locate experimental conditions.
-The platform will leverage the Retrieval Augmented Generation (RAG) approach to cross-reference and bias model responses towards accurate chemistry literature.
+Develop a chat-based search platform using pre-trained Language Models (LMs) from [hugging face](https://huggingface.co/meta-llama), tailored for chemists to efficiently locate experimental conditions.
+The platform will leverage the Retrieval Augmented Generation (RAG) approach to cross-reference and bias model responses towards accurate chemistry literature. [llama-index](https://gpt-index.readthedocs.io/en/latest/index.html) will be used to index the chemistry literature.
 The model is then deployed on a azure static web app. The backend is built with flask and deployed on azure app service.
 
 Chemistry experties information are going to be retrieved from PubChem, Reacxys, ChemArxiv, etc. Then, these dataset will be prepared as vector database for the RAG approach. The conditions to generate the optimal synthesis conditions for a given chemical synthesis name or reaction smart will be curated during the hackathon.
