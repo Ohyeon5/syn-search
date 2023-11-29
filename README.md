@@ -26,9 +26,19 @@ src
 ```
 
 ## Setup
-Setup python package:
+Setup python package for model data processing:
 
-    make env
+    make env-ml
+    conda activate syn-ml
+
+Setup env for backend:
+
+    make env-backend
+    conda activate syn-ws
+
+Setup env for frontend:
+
+    make env-frontend
 
 ## Dataset
 Various chemistry related journals will be used. The dataset will be stored in `data` folder. Here are some of the journals we are considering:

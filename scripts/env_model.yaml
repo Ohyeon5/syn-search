@@ -1,0 +1,14 @@
+name: syn-ml
+channels:
+  - conda-forge
+  - defaults
+  - pip
+dependencies:
+  - python==3.11
+  - pandas
+  - numpy
+  - scipy
+  - pyyaml
+  - pypdf >= 3.17.0
+  - yq
+  - jq
