@@ -2,7 +2,10 @@ name: syn-ws
 channels:
   - conda-forge
   - defaults
+  - pip
 dependencies:
   - python==3.11
   - fastapi
   - uvicorn
+  - openai
+  - async-timeout
