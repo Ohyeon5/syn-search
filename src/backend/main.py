@@ -1,13 +1,16 @@
 import asyncio
 
+import os
 import async_timeout
 import openai
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from models import InferenceRequest
 
 GENERATION_TIMEOUT_SEC = 60
 
+load_dotenv()
 app = FastAPI()
 
 
@@ -43,6 +46,21 @@ async def stream_generator(subscription):
                 yield post_processing(chunk)
         except asyncio.TimeoutError:
             raise HTTPException(status_code=504, detail="Stream timed out")
+
+
+@app.post("/chat")
+async def chat(request: InferenceRequest):
+    client = openai.AzureOpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),  
+        api_version=os.getenv("OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("OPENAI_BASE_URL")
+        )
+
+    chat_completion = client.chat.completions.create(
+        model=request.model_name,
+        messages=[{"role": "user", "content": request.input_text}],
+    )
+    return chat_completion
 
 
 def post_processing(chunk):

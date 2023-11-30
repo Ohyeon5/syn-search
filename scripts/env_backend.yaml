@@ -9,3 +9,4 @@ dependencies:
   - uvicorn
   - openai
   - async-timeout
+  - python-dotenv
