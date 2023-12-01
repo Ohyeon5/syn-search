@@ -23,6 +23,30 @@ from .settings import settings
 GENERATION_TIMEOUT_SEC = 60
 
 load_dotenv()
+llm = AzureOpenAI(
+    engine="gpt-35-turbo",
+    model="gpt-35-turbo",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    api_version=os.getenv("OPENAI_API_VERSION"),
+    azure_endpoint=os.getenv("OPENAI_BASE_URL"),
+)
+
+embed_model = AzureOpenAIEmbedding(
+    azure_deployment="text-embedding-ada-002",
+    model="text-embedding-ada-002",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    api_version=os.getenv("OPENAI_API_VERSION"),
+    azure_endpoint=os.getenv("OPENAI_BASE_URL"),
+    embed_batch_size=1,
+)
+
+service_context = ServiceContext.from_defaults(
+    llm=llm,
+    embed_model=embed_model,
+)
+
+set_global_service_context(service_context)
+
 app = FastAPI()
 
 # Load vector db
@@ -81,7 +105,6 @@ def chat(request: InferenceRequest):
 
 @app.post("/q_and_a")
 def q_and_a(request: InferenceRequest):
-    set_environment()
     retriever = VectorIndexRetriever(
         index=patent_index,
         similarity_top_k=request.top_k_similar,
@@ -91,32 +114,6 @@ def q_and_a(request: InferenceRequest):
     )
     response = query_engine.query(request.input_text)
     return response
-
-
-def set_environment():
-    llm = AzureOpenAI(
-        engine="gpt-35-turbo",
-        model="gpt-35-turbo",
-        api_key=os.getenv("OPENAI_API_KEY"),
-        api_version=os.getenv("OPENAI_API_VERSION"),
-        azure_endpoint=os.getenv("OPENAI_BASE_URL"),
-    )
-
-    embed_model = AzureOpenAIEmbedding(
-        azure_deployment="text-embedding-ada-002",
-        model="text-embedding-ada-002",
-        api_key=os.getenv("OPENAI_API_KEY"),
-        api_version=os.getenv("OPENAI_API_VERSION"),
-        azure_endpoint=os.getenv("OPENAI_BASE_URL"),
-        embed_batch_size=1,
-    )
-
-    service_context = ServiceContext.from_defaults(
-        llm=llm,
-        embed_model=embed_model,
-    )
-
-    set_global_service_context(service_context)
 
 
 def post_processing(chunk):
