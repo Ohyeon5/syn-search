@@ -14,8 +14,6 @@ from llama_index import (
 )
 from llama_index.embeddings import AzureOpenAIEmbedding
 from llama_index.llms import AzureOpenAI
-from llama_index.query_engine import RetrieverQueryEngine
-from llama_index.retrievers import VectorIndexRetriever
 
 from .models import InferenceRequest
 from .settings import settings
@@ -61,18 +59,20 @@ async def index():
 
 @app.post("/openai_streaming")
 async def openai_streaming(request: InferenceRequest) -> StreamingResponse:
+    client = openai.AsyncAzureOpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        api_version=os.getenv("OPENAI_API_VERSION"),
+        azure_endpoint=os.getenv("OPENAI_BASE_URL"),
+    )
     try:
-        subscription = await openai.ChatCompletion.acreate(
+        chat_completion = await client.chat.completions.create(
             model=request.model_name,
-            api_key=request.api_key,
-            organization=request.org_id,
-            messages=request.input_text,
+            messages=[{"role": "user", "content": request.input_text}],
             stream=True,
-            **request.generation_cfg,
         )
 
         return StreamingResponse(
-            stream_generator(subscription), media_type="text/event-stream"
+            stream_generator(chat_completion), media_type="text/event-stream"
         )
     except openai.OpenAIError:
         raise HTTPException(status_code=500, detail="OpenAI call failed")
@@ -103,18 +103,34 @@ def chat(request: InferenceRequest):
     return chat_completion
 
 
+async def astreamer(generator):
+    try:
+        for i in generator:
+            yield (i)
+            await asyncio.sleep(0.1)
+    except asyncio.CancelledError:
+        print("cancelled")
+
+
 @app.post("/q_and_a")
-def q_and_a(request: InferenceRequest):
-    retriever = VectorIndexRetriever(
-        index=patent_index,
-        similarity_top_k=request.top_k_similar,
-    )
-    query_engine = RetrieverQueryEngine(
-        retriever=retriever,
-    )
-    response = query_engine.query(request.input_text)
-    return response
+async def q_and_a(request: InferenceRequest) -> StreamingResponse:
+    try:
+        query_engine = patent_index.as_query_engine(
+            streaming=True, similarity_top_k=request.top_k_similar
+        )
+        response_stream = query_engine.query(request.input_text)
+        return StreamingResponse(
+            astreamer(response_stream.response_gen), media_type="text/event-stream"
+        )
+    except openai.OpenAIError:
+        raise HTTPException(status_code=500, detail="OpenAI call failed")
 
 
 def post_processing(chunk):
-    return chunk
+    print("CHUNK!!!!")
+    print(chunk)
+    reply = chunk.choices[0].delta.content
+    print(reply)
+    if reply is None:
+        return ""
+    return str(reply)
