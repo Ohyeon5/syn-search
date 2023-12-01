@@ -77,3 +77,99 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  height: 100px;
+  width: 100px;
+  background-image: url('../figs/icon.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevents scrolling caused by the pseudo-element */
+}
+
+body {
+  display: flex;
+  place-items: center;
+  min-height: 100vh;
+  background-color: #ffffff; /* Set background color to white */
+  background-image: url('../figs/g121.svg'); /* Path to your SVG for the bottom right corner */
+  background-position: bottom right; /* Position the image at the bottom right */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  /* background-size: contain; Adjust as needed */
+  position: relative; /* Needed for absolute positioning of pseudo-element */
+  place-items: start center;
+}
+
+body::before {
+  content: '';
+  position: fixed; /* Fixed position relative to the viewport */
+  top: 0; /* Align top edge with the top of the viewport */
+  left: -350px; /* Shift the image 50 pixels to the left */
+  background-image: url('../figs/g121.svg'); /* Path to your SVG for the top left corner */
+  background-position: left -50px top 0; /* Adjust the background position */
+  background-repeat: no-repeat;
+  background-size: contain; /* Adjust as needed */
+  transform: rotate(180deg); /* Rotate the image 180 degrees */
+  width: 1000px; /* Set a specific width */
+  height: 1000px; /* Set a specific height */
+  z-index: 9999; /* High z-index to ensure it's above other elements */
+}
+
+.top-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.about-btn {
+  margin-right: 10px; /* Space between the button and the icon */
+  padding: 0;
+  background-color: transparent;
+  color: #646cff;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.input-window {
+  margin-top: 50vh; /* Adjust as needed */
+  align-self: start; /* Align to the start (left) of the flex container */
+  width: 80%; /* Set a specific width if needed to constrain the size */
+  margin-left: 10%; /* Adjust as needed to move more to the left */
+}
+
+
+.input-window .smiles-input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em; /* Space between this and the optional text */
+}
+
+.input-window .smiles-input input[type="text"] {
+  flex-grow: 1;
+  margin-right: 10px; /* Space between the input and the Draw button */
+}
+
+.input-window .additional-text {
+  margin-bottom: 1em; /* Space between this and the main input */
+}
+
+.input-window input[type="text"] {
+  background-color: #ffffff; /* Set background to white */
+  width: 200%; /* Double the width */
+  height: 2em; /* Increase the height */
+  padding: 0.5em; /* Add some padding for better visibility */
+  border: 1px solid #ccc; /* Optional: add a border */
+}

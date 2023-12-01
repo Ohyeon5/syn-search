@@ -9,6 +9,9 @@
     input_text: "",
   };
 
+  let smiles = '';
+  let additionalText = '';
+
   const handleFetch = async () => {
     console.log("here", URLAPI);
     data = false
@@ -43,21 +46,31 @@
 </script>
 
 <main>
-  <div>
-    <form
-      on:submit|preventDefault={handleFetch}
-    >
+  <div class="top-panel">
+    <button class="about-btn">About Syn Search</button>
+    <div class="icon"></div>
+  </div>
+  <div class="input-window">
+    <form on:submit|preventDefault={handleFetch}>
+      <div class="smiles-input">
+        <input type="text" placeholder="Reaction SMILES" bind:value={smiles} />
+        <button on:click|preventDefault={drawSmiles}>Draw</button>
+      </div>
+      <div class="additional-text">
+        <input type="text" placeholder="Additional text (optional)" bind:value={additionalText} />
+      </div>
       <input
         type="text"
-        placeholder="Input your reaction in smiles format"
+        placeholder="Ask SynSearch"
         bind:value={requestOptions.input_text}
       />
       <button on:click|preventDefault={handleFetch}>GO</button>
     </form>
     {#if !data}
-      waiting ...
+      Waiting for a response ...
     {:else}
       {data}
     {/if}
   </div>
 </main>
+
