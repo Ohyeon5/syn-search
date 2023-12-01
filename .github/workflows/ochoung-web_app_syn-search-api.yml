@@ -23,11 +23,13 @@ jobs:
           python-version: '3.11'
 
       - name: Create and install dependencies
+        #run: |
+        #  conda env create -f ./scripts/env_backend.yaml -p venv
+        #  CONDA_BASE=$(conda info --base)
+        #  source $CONDA_BASE/etc/profile.d/conda.sh
+        #  conda activate ./venv
         run: |
-          conda env create -f ./scripts/env_backend.yaml -p venv
-          CONDA_BASE=$(conda info --base)
-          source $CONDA_BASE/etc/profile.d/conda.sh
-          conda activate ./venv
+          pip install -r ./src/backend/requirements.txt
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
