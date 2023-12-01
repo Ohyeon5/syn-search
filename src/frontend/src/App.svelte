@@ -29,7 +29,13 @@
   $: requestOptions.input_text;
 
   onMount(() => {
-    URLAPI ="0.0.0.0:8000/api/chat";
+    if (window.location.hostname.includes("localhost")){
+      URLAPI =
+      window.location.protocol + "//" + window.location.hostname + ":8000/api/chat";
+    } else {
+      URLAPI =window.location.protocol + "//"+"0.0.0.0:8000/api/chat";
+    }
+    // URLAPI ="0.0.0.0:8000/api/chat";
     // URLAPI =
     //   window.location.protocol + "//" + window.location.hostname + ":8000/api/chat";
     console.log(URLAPI);
