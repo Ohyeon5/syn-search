@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   let URLAPI;
-  let data;
+  let data = null;
 
   let requestOptions = {
     model_name: "gpt-35-turbo",
@@ -13,6 +13,7 @@
   let additionalText = '';
 
   const handleFetch = async () => {
+    requestOptions.input_text = `You are an AI Chemistry assistant. ${smiles} ${additionalText}. Give actionable insight into this and separate each bullet point with a new line.`;
     console.log("here", URLAPI);
     data = false
     const response = await fetch(URLAPI, {
@@ -50,24 +51,23 @@
   <div class="input-window">
     <form on:submit|preventDefault={handleFetch}>
       <div class="smiles-input">
-        <input type="text" placeholder="Reaction SMILES" bind:value={smiles} />
-        <button on:click|preventDefault={drawSmiles}>Draw</button>
+        <label for="reaction-smiles">Ask SynSearch</label>
+        <input id="reaction-smiles" type="text" placeholder="Reaction SMILES" bind:value={smiles} />
+        <!-- <button on:click|preventDefault={drawSmiles}>Draw</button> -->
       </div>
       <div class="additional-text">
         <input type="text" placeholder="Additional text (optional)" bind:value={additionalText} />
       </div>
-      <input
-        type="text"
-        placeholder="Ask SynSearch"
-        bind:value={requestOptions.input_text}
-      />
       <button on:click|preventDefault={handleFetch}>GO</button>
     </form>
-    {#if !data}
-      Waiting for a response ...
-    {:else}
-      {data}
-    {/if}
+
+    <div class="data-output">
+      {#if !data}
+        Waiting for a response ...
+      {:else}
+        {data}
+      {/if}
+    </div>
   </div>
 </main>
 

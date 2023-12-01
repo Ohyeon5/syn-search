@@ -94,35 +94,35 @@ html, body {
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Prevents scrolling caused by the pseudo-element */
+  overflow: hidden;
 }
 
 body {
   display: flex;
   place-items: center;
   min-height: 100vh;
-  background-color: #ffffff; /* Set background color to white */
-  background-image: url('../figs/g121.svg'); /* Path to your SVG for the bottom right corner */
-  background-position: bottom right; /* Position the image at the bottom right */
-  background-repeat: no-repeat; /* Do not repeat the image */
+  background-color: #ffffff;
+  background-image: url('../figs/g121.svg');
+  background-position: bottom right;
+  background-repeat: no-repeat;
   /* background-size: contain; Adjust as needed */
-  position: relative; /* Needed for absolute positioning of pseudo-element */
+  position: relative;
   place-items: start center;
 }
 
 body::before {
   content: '';
-  position: fixed; /* Fixed position relative to the viewport */
-  top: 0; /* Align top edge with the top of the viewport */
-  left: -350px; /* Shift the image 50 pixels to the left */
-  background-image: url('../figs/g121.svg'); /* Path to your SVG for the top left corner */
-  background-position: left -50px top 0; /* Adjust the background position */
+  position: fixed;
+  top: 0;
+  left: -350px;
+  background-image: url('../figs/g121.svg');
+  background-position: left -50px top 0;
   background-repeat: no-repeat;
-  background-size: contain; /* Adjust as needed */
-  transform: rotate(180deg); /* Rotate the image 180 degrees */
-  width: 1000px; /* Set a specific width */
-  height: 1000px; /* Set a specific height */
-  z-index: 9999; /* High z-index to ensure it's above other elements */
+  background-size: contain;
+  transform: rotate(180deg);
+  width: 1000px;
+  height: 1000px;
+  z-index: 9999;
 }
 
 .top-panel {
@@ -134,7 +134,7 @@ body::before {
 }
 
 .about-btn {
-  margin-right: 10px; /* Space between the button and the icon */
+  margin-right: 10px;
   padding: 0;
   background-color: transparent;
   color: #646cff;
@@ -144,12 +144,11 @@ body::before {
 }
 
 .input-window {
-  margin-top: 50vh; /* Adjust as needed */
+  margin-top: 20vh; /* Adjust as needed */
   align-self: start; /* Align to the start (left) of the flex container */
   width: 80%; /* Set a specific width if needed to constrain the size */
   margin-left: 10%; /* Adjust as needed to move more to the left */
 }
-
 
 .input-window .smiles-input {
   display: flex;
@@ -168,8 +167,32 @@ body::before {
 
 .input-window input[type="text"] {
   background-color: #ffffff; /* Set background to white */
+  color: #000000; /* Set text color to black */
   width: 200%; /* Double the width */
   height: 2em; /* Increase the height */
   padding: 0.5em; /* Add some padding for better visibility */
   border: 1px solid #ccc; /* Optional: add a border */
+}
+
+.data-output {
+  color: #000000; /* Set text color to black */
+  max-height: 200px; /* Set a maximum height for the container */
+  overflow-y: scroll; /* Always show vertical scroll bar */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #646cff transparent; /* For Firefox: thumb and transparent track */
+
+  /* For Webkit (Chrome, Edge, Safari) */
+  &::-webkit-scrollbar {
+    width: 8px; /* Scrollbar width */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent; /* Transparent track color */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #646cff; /* Thumb color */
+    border-radius: 4px;
+    border: 3px solid transparent; /* Creates padding around the thumb with transparent border */
+  }
 }
