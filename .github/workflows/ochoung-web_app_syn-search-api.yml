@@ -31,7 +31,7 @@ jobs:
           conda env create -f ./scripts/env_backend.yaml -p venv
           CONDA_BASE=$(conda info --base)
           source $CONDA_BASE/etc/profile.d/conda.sh
-          conda activate venv
+          conda activate ./venv
 
       # Optional: Add step to run tests here
 
