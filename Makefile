@@ -17,7 +17,7 @@ env-backend:
 	conda env create -f ./scripts/env_backend.yaml
 
 start-fastapi:
-	uvicorn src.backend.main:app --reload
+	uvicorn src.backend.main:app --host localhost --port 8000 --reload
 
 # frontend (svelte)
 env-frontend:
