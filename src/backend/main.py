@@ -31,7 +31,7 @@ async def index():
     return {"message": "Welcome to vlib api!"}
 
 
-@app.post("/chat")
+@app.post("/api/chat")
 async def chat(request: InferenceRequest):
     client = openai.AzureOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"),
