@@ -35,9 +35,6 @@
     } else {
       URLAPI =window.location.protocol + "//"+"0.0.0.0:8000/api/chat";
     }
-    // URLAPI ="0.0.0.0:8000/api/chat";
-    // URLAPI =
-    //   window.location.protocol + "//" + window.location.hostname + ":8000/api/chat";
     console.log(URLAPI);
   });
 </script>
