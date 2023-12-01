@@ -29,7 +29,7 @@ jobs:
       - name: Create and install dependencies
         run: |
           conda env create -f ./scripts/env_backend.yaml -p venv
-          source venv/bin/avtivate
+          conda activate ./venv
 
       # Optional: Add step to run tests here
 
