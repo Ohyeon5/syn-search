@@ -29,6 +29,8 @@ jobs:
         #  source $CONDA_BASE/etc/profile.d/conda.sh
         #  conda activate ./venv
         run: |
+          python -m venv venv
+          source venv/bin/activate
           pip install -r ./src/backend/requirements.txt
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
