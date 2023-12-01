@@ -47,5 +47,4 @@ async def chat(request: InferenceRequest):
 
 
 def post_processing(chunk):
-    print("hello")
     return chunk
