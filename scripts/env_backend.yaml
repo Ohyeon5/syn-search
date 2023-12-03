@@ -10,3 +10,4 @@ dependencies:
   - openai
   - async-timeout
   - python-dotenv
+  - pydantic-settings

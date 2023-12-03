@@ -14,7 +14,7 @@ llama-index.git:
 
 # backend (fastapi)
 env-backend:
-	conda env create -f ./scripts/env_backend.yaml
+	conda env create -f ./scripts/env_backend.yaml && install-llama-index
 
 start-fastapi:
 	uvicorn src.backend.main:app --host localhost --port 8000 --reload
