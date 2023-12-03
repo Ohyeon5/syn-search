@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 
 import async_timeout
 import openai
@@ -17,9 +18,9 @@ from llama_index.embeddings import AzureOpenAIEmbedding
 from llama_index.llms import AzureOpenAI
 
 from .models import InferenceRequest
-from .settings import settings
 
 GENERATION_TIMEOUT_SEC = 60
+LLAMA_INDEX_PATH = Path("/datadrive/new_grant_I2011")
 
 load_dotenv()
 llm = AzureOpenAI(
@@ -62,7 +63,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # Load vector db
-storage_context = StorageContext.from_defaults(persist_dir=settings.patents_index_path)
+storage_context = StorageContext.from_defaults(persist_dir=LLAMA_INDEX_PATH)
 patent_index = load_index_from_storage(storage_context)
 
 
