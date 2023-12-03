@@ -12,3 +12,6 @@ dependencies:
   - pypdf >= 3.17.0
   - yq
   - jq
+  - rdkit
+  - progressbar
+  - sqlite
