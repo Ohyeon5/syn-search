@@ -1,10 +1,12 @@
 import asyncio
 import os
+from pathlib import Path
 
 import async_timeout
 import openai
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from llama_index import (
     ServiceContext,
@@ -16,9 +18,9 @@ from llama_index.embeddings import AzureOpenAIEmbedding
 from llama_index.llms import AzureOpenAI
 
 from .models import InferenceRequest
-from .settings import settings
 
 GENERATION_TIMEOUT_SEC = 60
+LLAMA_INDEX_PATH = Path("/datadrive/new_grant_I2011")
 
 load_dotenv()
 llm = AzureOpenAI(
@@ -47,8 +49,21 @@ set_global_service_context(service_context)
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:5173",
+    "localhost:5173",
+    "https://proud-water-0f0a39703.4.azurestaticapps.net",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Load vector db
-storage_context = StorageContext.from_defaults(persist_dir=settings.patents_index_path)
+storage_context = StorageContext.from_defaults(persist_dir=LLAMA_INDEX_PATH)
 patent_index = load_index_from_storage(storage_context)
 
 
@@ -88,14 +103,13 @@ async def stream_generator(subscription):
             raise HTTPException(status_code=504, detail="Stream timed out")
 
 
-@app.post("/chat")
+@app.post("/api/chat")
 def chat(request: InferenceRequest):
     client = openai.AzureOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"),
         api_version=os.getenv("OPENAI_API_VERSION"),
         azure_endpoint=os.getenv("OPENAI_BASE_URL"),
     )
-
     chat_completion = client.chat.completions.create(
         model=request.model_name,
         messages=[{"role": "user", "content": request.input_text}],
