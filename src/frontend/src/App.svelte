@@ -5,7 +5,7 @@
   let data = null;
 
   let requestOptions = {
-    model_name: "gpt-35-turbo",
+    model_name: "gpt-4",
     input_text: "",
   };
 
@@ -53,7 +53,7 @@
       <div class="smiles-input">
         <label for="reaction-smiles">Ask SynSearch</label>
         <input id="reaction-smiles" type="text" placeholder="Reaction SMILES" bind:value={smiles} />
-        <!-- <button on:click|preventDefault={drawSmiles}>Draw</button> -->
+        <button>Draw</button>
       </div>
       <div class="additional-text">
         <input type="text" placeholder="Additional text (optional)" bind:value={additionalText} />
@@ -70,4 +70,3 @@
     </div>
   </div>
 </main>
-

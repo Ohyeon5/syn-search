@@ -162,13 +162,15 @@ body::before {
 }
 
 .input-window .additional-text {
+  flex-grow: 1;
   margin-bottom: 1em; /* Space between this and the main input */
+  margin-right: 10px;
 }
 
 .input-window input[type="text"] {
   background-color: #ffffff; /* Set background to white */
   color: #000000; /* Set text color to black */
-  width: 200%; /* Double the width */
+  width: 100%; /* Double the width */
   height: 2em; /* Increase the height */
   padding: 0.5em; /* Add some padding for better visibility */
   border: 1px solid #ccc; /* Optional: add a border */
