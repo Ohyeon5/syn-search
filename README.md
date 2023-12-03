@@ -1,5 +1,7 @@
 # Syn-Search
-Optimal Drug Synthesis Condition Searching Conversational AI
+Optimal Drug Synthesis Condition Searching Conversational AI using LLMs.
+
+We created an AI framework to help chemists find actionable protocols to synthesize molecules.
 
 Drug discovery often involves meticulous chemical compound synthesis. Medicinal chemists adjust synthesis conditions incrementally to find the optimal state. While using known conditions from literature seems logical, chemical reactions are highly sensitive. Even minor changes in reagents or solvents can alter the outcome significantly.
 
@@ -17,12 +19,14 @@ Chemistry experties information are going to be retrieved from PubChem, Reacxys,
 ### Llama 2
 In order to access the Llma 2 models, you need to request access from the [Meta website](https://ai.meta.com/resources/models-and-libraries/llama-downloads). Requests takes 1-2 days, so please submit the request prior to the usage date.
 
+Currently the codebase uses Azure OpenAI's gpt models, but we will use Llama2 for the future versions.
+
 ### Project Structure
 ```
 src
 |_ backend
 |_ frontend
-|_ model
+|_ preprocessing
 ```
 
 ## Setup
@@ -47,6 +51,7 @@ Various chemistry related journals will be used. The dataset will be stored in `
 - [Reacxys](https://www.elsevier.com/products/reaxys)
 - [ChemArxiv](https://chemrxiv.org/)
 - [Wikipedia Chemistry Subsection](https://huggingface.co/datasets/wikipedia)
+- [USPTO](https://figshare.com/articles/dataset/Chemical_reactions_from_US_patents_1976-Sep2016_/5104873/1)
 
 ## Reference
 - Retrieval Augmented Generation (RAG) approach: https://www.promptingguide.ai/techniques/rag
