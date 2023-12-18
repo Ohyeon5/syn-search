@@ -16,3 +16,4 @@ dependencies:
   - sqlite
   - rdkit >= 2023.09.3
   - llama-index
+  - python-dotenv
