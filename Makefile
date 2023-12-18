@@ -1,16 +1,7 @@
-all: env
-
-# ml
-env-ml: precommit install-llama-index
-	conda activate syn-ml && pip install -e .
-
-install-llama-index: llama-index.git
-	conda env create -f ./scripts/env_model.yaml
-	conda activate syn-ml && pip install poetry
-	conda activate syn-ml && cd llama-index.git && poetry install
-
-llama-index.git:
-	git clone https://github.com/jerryjliu/llama_index.git llama-index.git --depth 1
+# data preprocessing
+env-data:
+	conda env create -f ./scripts/env_data.yaml
+	~/miniconda3/envs/syn-data/bin/python -m pip install -e ./src/preprocessing/.
 
 # backend (fastapi)
 env-backend:

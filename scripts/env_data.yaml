@@ -1,4 +1,4 @@
-name: syn-ml
+name: syn-data
 channels:
   - conda-forge
   - defaults
@@ -12,6 +12,7 @@ dependencies:
   - pypdf >= 3.17.0
   - yq
   - jq
-  - rdkit
   - progressbar
   - sqlite
+  - rdkit >= 2023.09.3
+  - llama-index
