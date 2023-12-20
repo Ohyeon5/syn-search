@@ -48,7 +48,7 @@ Setup env for frontend:
 Various chemistry related journals will be used. The dataset will be stored in `data` folder. Here are some of the journals we are considering:
 
 - [PubChem](https://pubchem.ncbi.nlm.nih.gov/)
-- [Reacxys](https://www.elsevier.com/products/reaxys)
+- [Reaxys](https://www.elsevier.com/products/reaxys)
 - [ChemArxiv](https://chemrxiv.org/)
 - [Wikipedia Chemistry Subsection](https://huggingface.co/datasets/wikipedia)
 - [USPTO](https://figshare.com/articles/dataset/Chemical_reactions_from_US_patents_1976-Sep2016_/5104873/1)
