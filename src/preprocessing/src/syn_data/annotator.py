@@ -11,11 +11,14 @@ import os
 import pandas as pd
 import progressbar
 from rdkit import Chem, RDLogger
+from syn_data.path import ASSET_PATH
 
 RDLogger.DisableLog("rdApp.*")
 
 # import the filter list
-filter_list = pd.read_csv("funcgroups_list.csv", names=["SMARTS", "label", "void"])
+filter_list = pd.read_csv(
+    ASSET_PATH / "funcgroups_list.csv", names=("SMARTS", "label", "void")
+)
 filter_list["mols"] = filter_list.SMARTS.apply(Chem.MolFromSmarts)
 
 

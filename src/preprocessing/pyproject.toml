@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "syn-data"
+authors = [
+    {name = "Oh-hyeon Choung", email = "ohhyeon.choung@gmail.com"},
+]
+description = "data preprocessing module for syn-search"
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "syn_data.__version__"}
+
+[options.packages.find]
+where="src"
