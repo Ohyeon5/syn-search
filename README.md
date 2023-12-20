@@ -32,8 +32,8 @@ src
 ## Setup
 Setup python package for model data processing:
 
-    make env-ml
-    conda activate syn-ml
+    make env-data
+    conda activate syn-data
 
 Setup env for backend:
 
