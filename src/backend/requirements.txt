@@ -3,4 +3,4 @@ uvicorn
 openai
 async-timeout
 python-dotenv
-gunicorn
+llama-index

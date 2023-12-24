@@ -20,7 +20,7 @@ from llama_index.llms import AzureOpenAI
 from .models import InferenceRequest
 
 GENERATION_TIMEOUT_SEC = 60
-LLAMA_INDEX_PATH = Path("/datadrive/new_grant_I2011")
+LLAMA_INDEX_PATH = Path("./llama-index")
 
 load_dotenv()
 llm = AzureOpenAI(
