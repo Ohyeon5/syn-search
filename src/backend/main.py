@@ -52,7 +52,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "localhost:5173",
-    "https://proud-water-0f0a39703.4.azurestaticapps.net",
+    "https://proud-water-0f0a39703.4.azurestaticapps.net/",
 ]
 
 app.add_middleware(
