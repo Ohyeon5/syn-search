@@ -15,18 +15,18 @@ from tqdm import tqdm
 RDLogger.DisableLog("rdApp.*")
 
 # import the filter list
-filter_list = pd.read_csv(
+FILTER_LIST = pd.read_csv(
     ASSET_PATH / "funcgroups_list.csv", names=("SMARTS", "label", "void")
 )
-filter_list["mols"] = filter_list.SMARTS.apply(Chem.MolFromSmarts)
+FILTER_LIST["mols"] = FILTER_LIST.SMARTS.apply(Chem.MolFromSmarts)
 
 
 def lister(mol):
     # substructure search
     results = []
-    for i in range(len(filter_list)):
-        if mol.HasSubstructMatch(filter_list.mols[i]):
-            results.append(filter_list.label[i])
+    for i in range(len(FILTER_LIST)):
+        if mol.HasSubstructMatch(FILTER_LIST.mols[i]):
+            results.append(FILTER_LIST.label[i])
     results = [s.lower().strip() for s in results]
     return list(set(results))
 
