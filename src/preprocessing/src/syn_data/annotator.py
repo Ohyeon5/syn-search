@@ -4,14 +4,13 @@
 # Saves json files with annotations back.
 
 import json
-
-# Imports
-import os
+from pathlib import Path
+from typing import Dict, List
 
 import pandas as pd
-import progressbar
 from rdkit import Chem, RDLogger
 from syn_data.path import ASSET_PATH
+from tqdm import tqdm
 
 RDLogger.DisableLog("rdApp.*")
 
@@ -32,7 +31,7 @@ def lister(mol):
     return list(set(results))
 
 
-def smi_to_list(smiles):
+def smi_to_list(smiles: str) -> List:
     if smiles == "None":
         return []
     else:
@@ -46,76 +45,117 @@ def smi_to_list(smiles):
             return lister(mol)
 
 
-# define paths for data
+def rxn_smi_to_descriptive(rxn_smi: str) -> Dict[str, str]:
+    """Reaction smiles to the functional group descriptive str
+    Reaction smiles are composed of reactants + solvent -> product
+    in the following format:
+    reactant_1.reactant_2.reactant_3>solvent_1.solvent_2.solvent_3>product
+    or
+    reactant_1.reactant_2.reactant_3>>product
 
-spath = "/datadrive/uspto_json/grants/"
-fpath = "/datadrive/uspto_json/new_grants/"
+    Args:
+        rxn_smi (str): reaction smiles
+
+    Returns:
+        Dict[str, str]: reactions explained to chemically descriptive language,
+            in smiles or descriptive form, keys are "smiles" and "desc"
+            e.g., reactant 1 [A, B, C] and reactant 2 [A, G, F], are combined to be
+            [A, B, G, F] in solvent [L,M]
+    """
+    rs, ss, ps = rxn_smi.split(">")
+    reactants = [[smi, smi_to_list(smi)] for smi in rs.split(".")]
+    solvents = [[smi, smi_to_list(smi)] for smi in ss.split(".")]
+    products = [[smi, smi_to_list(smi)] for smi in ps.split(".")]
+    return {
+        "smiles": "This reaction combines "
+        + " ".join(
+            [f"reactant_{ii}: {reactant[0]}" for ii, reactant in enumerate(reactants)]
+        )
+        + " to be "
+        + " ".join([f"product_{ii}: {prod[0]}" for ii, prod in enumerate(products)])
+        + " in "
+        + " ".join([f"solvent_{ii}: {solv[0]}" for ii, solv in enumerate(solvents)]),
+        "desc": "This reaction combines "
+        + " ".join(
+            [f"reactant_{ii}: {reactant[1]}" for ii, reactant in enumerate(reactants)]
+        )
+        + " to be "
+        + " ".join([f"product_{ii}: {prod[1]}" for ii, prod in enumerate(products)])
+        + " in "
+        + " ".join([f"solvent_{ii}: {solv[1]}" for ii, solv in enumerate(solvents)]),
+    }
+
+
+def annotate_file(json_path: Path, save_dir: Path):
+    """Annotate json file's smiles to list of functional groups
+    then, save to json file in save_dir
+
+    Args:
+        json_path (Path): Path to the json file
+        save_dir (Path): save dir
+    """
+    with open(json_path) as user_file:
+        j = json.loads(user_file.read())
+        # print(f"In file {name}")
+        if "reaction" in j["reactionList"].keys():
+            for nx, x in enumerate(j["reactionList"]["reaction"]):
+                pl = x["productList"]["product"]
+                rl = x["reactantList"]["reactant"]
+
+                if isinstance(pl, dict):
+                    if "identifier" in pl.keys():
+                        if len(pl["identifier"]) > 0:
+                            smi_p = pl["identifier"][0]["@value"]
+                            # print(smi_p, smi_to_list(smi_p))
+                            j["reactionList"]["reaction"][nx]["productList"]["product"][
+                                "funcgroups"
+                            ] = smi_to_list(smi_p)
+                elif isinstance(pl, list):
+                    for nm, m in enumerate(pl):
+                        if "identifier" in m.keys():
+                            if (
+                                isinstance(m["identifier"], list)
+                                and len(m["identifier"]) > 0
+                            ):
+                                smi_p = m["identifier"][0]["@value"]
+                                # print(smi_p, smi_to_list(smi_p))
+                                j["reactionList"]["reaction"][nx]["productList"][
+                                    "product"
+                                ][nm]["funcgroups"] = smi_to_list(smi_p)
+
+                if isinstance(rl, dict):
+                    if "identifier" in rl.keys():
+                        if len(rl["identifier"]) > 0:
+                            # print(type(rl["identifier"]), rl["identifier"])
+                            smi_r = rl["identifier"][0]["@value"]
+                            # print(smi_r, smi_to_list(smi_r))
+                            j["reactionList"]["reaction"][nx]["reactantList"][
+                                "reactant"
+                            ]["funcgroups"] = smi_to_list(smi_r)
+                elif isinstance(rl, list):
+                    for nm, m in enumerate(rl):
+                        if "identifier" in m.keys():
+                            if (
+                                isinstance(m["identifier"], list)
+                                and len(m["identifier"]) > 0
+                            ):
+                                # print(type(m["identifier"]), m["identifier"])
+                                smi_r = m["identifier"][0]["@value"]
+                                # print(smi_r, smi_to_list(smi_r))
+                                j["reactionList"]["reaction"][nx]["reactantList"][
+                                    "reactant"
+                                ][nm]["funcgroups"] = smi_to_list(smi_r)
+
+    with open(f"{save_dir/json_path.name}", "w+") as user_file:
+        json.dump(j, user_file, indent=4)
+
 
 if __name__ == "__main__":
-    with progressbar.ProgressBar(max_value=2460) as bar:
-        for f in list(os.scandir(spath))[::-1]:
-            # print(f"File {i}")
-            if f.is_file():
-                with open(f.path) as user_file:
-                    j = json.loads(user_file.read())
-                    name = os.path.basename(f)
-                    # print(f"In file {name}")
-                    if "reaction" in j["reactionList"].keys():
-                        for nx, x in enumerate(j["reactionList"]["reaction"]):
-                            pl = x["productList"]["product"]
-                            rl = x["reactantList"]["reactant"]
+    # define paths for data
+    spath = Path("/datadrive/uspto_json/grants/")
+    fpath = Path("/datadrive/uspto_json/new_grants/")
 
-                            if isinstance(pl, dict):
-                                if "identifier" in pl.keys():
-                                    if len(pl["identifier"]) > 0:
-                                        smi_p = pl["identifier"][0]["@value"]
-                                        # print(smi_p, smi_to_list(smi_p))
-                                        j["reactionList"]["reaction"][nx][
-                                            "productList"
-                                        ]["product"]["funcgroups"] = smi_to_list(smi_p)
-                            elif isinstance(pl, list):
-                                for nm, m in enumerate(pl):
-                                    if "identifier" in m.keys():
-                                        if (
-                                            isinstance(m["identifier"], list)
-                                            and len(m["identifier"]) > 0
-                                        ):
-                                            smi_p = m["identifier"][0]["@value"]
-                                            # print(smi_p, smi_to_list(smi_p))
-                                            j["reactionList"]["reaction"][nx][
-                                                "productList"
-                                            ]["product"][nm][
-                                                "funcgroups"
-                                            ] = smi_to_list(
-                                                smi_p
-                                            )
-
-                            if isinstance(rl, dict):
-                                if "identifier" in rl.keys():
-                                    if len(rl["identifier"]) > 0:
-                                        # print(type(rl["identifier"]), rl["identifier"])
-                                        smi_r = rl["identifier"][0]["@value"]
-                                        # print(smi_r, smi_to_list(smi_r))
-                                        j["reactionList"]["reaction"][nx][
-                                            "reactantList"
-                                        ]["reactant"]["funcgroups"] = smi_to_list(smi_r)
-                            elif isinstance(rl, list):
-                                for nm, m in enumerate(rl):
-                                    if "identifier" in m.keys():
-                                        if (
-                                            isinstance(m["identifier"], list)
-                                            and len(m["identifier"]) > 0
-                                        ):
-                                            # print(type(m["identifier"]), m["identifier"])
-                                            smi_r = m["identifier"][0]["@value"]
-                                            # print(smi_r, smi_to_list(smi_r))
-                                            j["reactionList"]["reaction"][nx][
-                                                "reactantList"
-                                            ]["reactant"][nm][
-                                                "funcgroups"
-                                            ] = smi_to_list(
-                                                smi_r
-                                            )
-
-                with open(f"{fpath}{name}", "w+") as user_file:
-                    json.dump(j, user_file, indent=4)
+    for f in tqdm(list(spath.glob("*.json"))):
+        # print(f"File {i}")
+        if f.is_file():
+            annotate_file(f, fpath)
