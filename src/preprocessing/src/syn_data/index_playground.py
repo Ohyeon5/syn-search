@@ -54,7 +54,7 @@ if __name__ == "__main__":
             data_dir / "I20160920.json",
         ]
 
-        save_dir = data_root_dir / "index"
+        save_dir = data_root_dir / ".." / "llama-index"
         save_dir.mkdir(exist_ok=True)
 
         # Build index per file
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     if args.combine:
         indices = []
         index_summaries = []
-        for index_path in Path("data/index").glob("*.index"):
+        for index_path in Path("llama-index").glob("*.index"):
             # Load vector db
             print(f"loading index from {index_path}")
             storage_context = StorageContext.from_defaults(persist_dir=index_path)

@@ -47,12 +47,12 @@ service_context = ServiceContext.from_defaults(
 
 set_global_service_context(service_context)
 
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 origins = [
     "http://localhost:5173",
     "localhost:5173",
-    "https://proud-water-0f0a39703.4.azurestaticapps.net/",
+    "https://delightful-grass-0b4be1603.4.azurestaticapps.net/",
 ]
 
 app.add_middleware(
@@ -67,7 +67,7 @@ storage_context = StorageContext.from_defaults(persist_dir=LLAMA_INDEX_PATH)
 patent_index = load_index_from_storage(storage_context)
 
 
-@app.get("/api")
+@app.get("/")
 async def index():
     return {"message": "Welcome to vlib api!"}
 
@@ -103,7 +103,7 @@ async def stream_generator(subscription):
             raise HTTPException(status_code=504, detail="Stream timed out")
 
 
-@app.post("/api/chat")
+@app.post("/chat")
 def chat(request: InferenceRequest):
     client = openai.AzureOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"),
