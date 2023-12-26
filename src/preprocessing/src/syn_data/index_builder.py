@@ -68,7 +68,11 @@ def build_index_per_file(file_path: Path, save_path: Path):
             reaction_text = str(reaction)
             if len(reaction_text) > 15000:
                 n1 = TextNode(text=reaction_text[:14000])
-                n2 = TextNode(text=reaction_text[13000:])
+                rxn_smiles = {
+                    "dl:reactionSmiles": reaction["dl:reactionSmiles"],
+                    "dl:reactionSmilesDesc": reaction["dl:reactionSmilesDesc"],
+                }
+                n2 = TextNode(text=str(rxn_smiles) + reaction_text[13500:])
                 nodes.extend([n1, n2])
             else:
                 node = TextNode(text=reaction_text)
