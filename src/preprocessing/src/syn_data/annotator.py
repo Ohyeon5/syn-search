@@ -5,7 +5,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 import pandas as pd
 from rdkit import Chem, RDLogger
@@ -45,7 +45,7 @@ def smi_to_list(smiles: str) -> List:
             return lister(mol)
 
 
-def rxn_smi_to_descriptive(rxn_smi: str) -> Dict[str, str]:
+def rxn_smi_to_desc(rxn_smi: str) -> str:
     """Reaction smiles to the functional group descriptive str
     Reaction smiles are composed of reactants + solvent -> product
     in the following format:
@@ -57,33 +57,24 @@ def rxn_smi_to_descriptive(rxn_smi: str) -> Dict[str, str]:
         rxn_smi (str): reaction smiles
 
     Returns:
-        Dict[str, str]: reactions explained to chemically descriptive language,
-            in smiles or descriptive form, keys are "smiles" and "desc"
+        str : reactions explained to chemically descriptive language
             e.g., reactant 1 [A, B, C] and reactant 2 [A, G, F], are combined to be
             [A, B, G, F] in solvent [L,M]
     """
     rs, ss, ps = rxn_smi.split(">")
-    reactants = [[smi, smi_to_list(smi)] for smi in rs.split(".")]
-    solvents = [[smi, smi_to_list(smi)] for smi in ss.split(".")]
-    products = [[smi, smi_to_list(smi)] for smi in ps.split(".")]
-    return {
-        "smiles": "This reaction combines "
+    reactants = [smi_to_list(smi) for smi in rs.split(".")]
+    solvents = [smi_to_list(smi) for smi in ss.split(".")]
+    products = [smi_to_list(smi) for smi in ps.split(".")]
+    return (
+        "This reaction combines "
         + " ".join(
-            [f"reactant_{ii}: {reactant[0]}" for ii, reactant in enumerate(reactants)]
+            [f"reactant_{ii}: {reactant}" for ii, reactant in enumerate(reactants)]
         )
         + " to be "
-        + " ".join([f"product_{ii}: {prod[0]}" for ii, prod in enumerate(products)])
+        + " ".join([f"product_{ii}: {prod}" for ii, prod in enumerate(products)])
         + " in "
-        + " ".join([f"solvent_{ii}: {solv[0]}" for ii, solv in enumerate(solvents)]),
-        "desc": "This reaction combines "
-        + " ".join(
-            [f"reactant_{ii}: {reactant[1]}" for ii, reactant in enumerate(reactants)]
-        )
-        + " to be "
-        + " ".join([f"product_{ii}: {prod[1]}" for ii, prod in enumerate(products)])
-        + " in "
-        + " ".join([f"solvent_{ii}: {solv[1]}" for ii, solv in enumerate(solvents)]),
-    }
+        + " ".join([f"solvent_{ii}: {solv}" for ii, solv in enumerate(solvents)])
+    )
 
 
 def annotate_file(json_path: Path, save_dir: Path):
@@ -94,11 +85,17 @@ def annotate_file(json_path: Path, save_dir: Path):
         json_path (Path): Path to the json file
         save_dir (Path): save dir
     """
+    save_dir.mkdir(exist_ok=True, parents=True)
     with open(json_path) as user_file:
         j = json.loads(user_file.read())
         # print(f"In file {name}")
         if "reaction" in j["reactionList"].keys():
             for nx, x in enumerate(j["reactionList"]["reaction"]):
+                # add rxn_smi_to_desc
+                rxn_smiles = x["dl:reactionSmiles"]
+                j["reactionList"]["reaction"][nx][
+                    "dl:reactionSmilesDesc"
+                ] = rxn_smi_to_desc(rxn_smiles)
                 pl = x["productList"]["product"]
                 rl = x["reactantList"]["reactant"]
 

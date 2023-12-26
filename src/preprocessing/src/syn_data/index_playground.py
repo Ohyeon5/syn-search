@@ -16,7 +16,7 @@ from llama_index.embeddings import AzureOpenAIEmbedding
 from llama_index.indices.composability import ComposableGraph
 from llama_index.llms import AzureOpenAI
 from llama_index.prompts import PromptTemplate
-from syn_data.annotator import annotate_file, rxn_smi_to_descriptive
+from syn_data.annotator import annotate_file, rxn_smi_to_desc
 from syn_data.index_builder import build_index_per_file
 from syn_data.path import MODULE_PATH
 
@@ -54,13 +54,6 @@ if __name__ == "__main__":
     data_dir = data_root_dir / "uspto_json" / "grants"
     annotate_dir = data_root_dir / "new_grants"
 
-    input_text = "[Cl:1][C:2]1[CH:3]=[C:4]([CH3:29])[C:5]2[N:10]=[C:9]([C:11]3[N:15]([C:16]4[C:21]([Cl:22])=[CH:20][CH:19]=[CH:18][N:17]=4)\
-[N:14]=[C:13]([C:23]([F:26])([F:25])[F:24])[CH:12]=3)[O:8][C:7](=[O:27])[C:6]=2[CH:28]=1.[CH3:30][NH2:31]>O1CCCC1>[Cl:1][C:2]1[CH:28]=\
-[C:6]([C:7]([NH:31][CH3:30])=[O:27])[C:5]([NH:10][C:9]([C:11]2[N:15]([C:16]3[C:21]([Cl:22])=[CH:20][CH:19]=[CH:18][N:17]=3)[N:14]=\
-[C:13]([C:23]([F:26])([F:24])[F:25])[CH:12]=2)=[O:8])=[C:4]([CH3:29])[CH:3]=1"
-    descriptive = rxn_smi_to_descriptive(input_text)
-    print(descriptive)
-
     if args.build_index:
         val_fnames = [
             "I20160906.json",
@@ -81,9 +74,10 @@ if __name__ == "__main__":
     if args.query:
         # query from the index
         input_text = "[Cl:1][C:2]1[CH:3]=[C:4]([CH3:29])[C:5]2[N:10]=[C:9]([C:11]3[N:15]([C:16]4[C:21]([Cl:22])=[CH:20][CH:19]=[CH:18][N:17]=4)\
-    [N:14]=[C:13]([C:23]([F:26])([F:25])[F:24])[CH:12]=3)[O:8][C:7](=[O:27])[C:6]=2[CH:28]=1.[CH3:30][NH2:31]>O1CCCC1>[Cl:1][C:2]1[CH:28]=\
-    [C:6]([C:7]([NH:31][CH3:30])=[O:27])[C:5]([NH:10][C:9]([C:11]2[N:15]([C:16]3[C:21]([Cl:22])=[CH:20][CH:19]=[CH:18][N:17]=3)[N:14]=\
-    [C:13]([C:23]([F:26])([F:24])[F:25])[CH:12]=2)=[O:8])=[C:4]([CH3:29])[CH:3]=1"
+[N:14]=[C:13]([C:23]([F:26])([F:25])[F:24])[CH:12]=3)[O:8][C:7](=[O:27])[C:6]=2[CH:28]=1.[CH3:30][NH2:31]>O1CCCC1>[Cl:1][C:2]1[CH:28]=\
+[C:6]([C:7]([NH:31][CH3:30])=[O:27])[C:5]([NH:10][C:9]([C:11]2[N:15]([C:16]3[C:21]([Cl:22])=[CH:20][CH:19]=[CH:18][N:17]=3)[N:14]=\
+[C:13]([C:23]([F:26])([F:24])[F:25])[CH:12]=2)=[O:8])=[C:4]([CH3:29])[CH:3]=1"
+        desc_input = rxn_smi_to_desc(input_text)
         # # Combine indices
         load_dotenv()
         llm = AzureOpenAI(
@@ -119,9 +113,7 @@ if __name__ == "__main__":
                 storage_context = StorageContext.from_defaults(persist_dir=index_path)
                 index = load_index_from_storage(storage_context)
                 index_summary = (
-                    index.as_query_engine()
-                    .query("reaction smiles of this node")
-                    .response
+                    index.as_query_engine().query("reactionSmilesDesc").response
                 )
                 indices.append(index)
                 index_summaries.append(index_summary)
@@ -136,13 +128,6 @@ if __name__ == "__main__":
             index_path = Path("data/index/I20160906.index")
             storage_context = StorageContext.from_defaults(persist_dir=index_path)
             patent_index = load_index_from_storage(storage_context)
-
-        # # rag prompt
-        # langchain_prompt = hub.pull("rlm/rag-prompt")
-        # lc_prompt_tmpl = LangchainPromptTemplate(
-        #     template=langchain_prompt,
-        #     template_var_mappings={"query_str": "question", "context_str": "context"},
-        # )
 
         prompt = "You are to describe an experimental procedure for an organic chemistry \
             reaction based on an input reaction smiles. This should take the form of a formal experimental, \
@@ -174,5 +159,5 @@ if __name__ == "__main__":
         query_engine.update_prompts(
             {"response_synthesizer:summary_template": new_summary_tmpl}
         )
-        response = query_engine.query(prompt + input_text)
+        response = query_engine.query(prompt + desc_input)
         print(response.response)
