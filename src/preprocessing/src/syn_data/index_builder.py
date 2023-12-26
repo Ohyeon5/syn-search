@@ -57,7 +57,41 @@ def build_index(patents_path, save_path, prefix="", chunksize=1000, overlap=20):
     index.storage_context.persist(persist_dir=save_path)
 
 
-def filter_reactant_fg(json_file):
+def build_index_per_file(file_path: Path, save_path: Path):
+    # Create LlamaIndex nodes, each node is a separate vector
+    nodes = []
+    print(f"Processing file: {file_path}")
+    reactions_list = get_reactions(file_path)
+    if len(reactions_list) > 0:
+        print(f"Number of reactions: {len(reactions_list)}")
+        for reaction in reactions_list:
+            reaction_text = str(reaction)
+            if len(reaction_text) > 15000:
+                n1 = TextNode(text=reaction_text[:14000])
+                n2 = TextNode(text=reaction_text[13000:])
+                nodes.extend([n1, n2])
+            else:
+                node = TextNode(text=reaction_text)
+                nodes.append(node)
+
+    service_context = prepare_context()
+    # Get embeddings and index them
+    index = VectorStoreIndex(nodes, service_context=service_context, show_progress=True)
+    # By default saves to save_path
+    index.storage_context.persist(persist_dir=save_path)
+
+
+def get_reactions(json_file, filter_fg=False):
+    with open(json_file, "r") as f:
+        json_content = json.load(f)
+    if filter_fg:
+        reaction_list = filter_reactant_fg(json_content)
+    else:
+        reaction_list = json_content["reactionList"].get("reaction")
+    return reaction_list
+
+
+def filter_reactant_fg(json_content):
     fg_list = [
         "alpha aryl carboxylic acid",
         "acidic groups",
@@ -67,8 +101,6 @@ def filter_reactant_fg(json_file):
         "ketone",
         "alcohol",
     ]
-    with open(json_file, "r") as f:
-        json_content = json.load(f)
     reaction_list = json_content["reactionList"].get("reaction")
     good_reactions = []
     if reaction_list:

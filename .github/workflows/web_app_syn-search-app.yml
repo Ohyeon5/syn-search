@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://synsearch.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_58a946f630f54c4d958159350edb91dd }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_9f87749093ec4f51b9ee57e2bb94afcb }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_8b869997e0594f92a7d60c52bfeec82a }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_171e0850dc704421911b50cb56ae39ca }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: synsearch.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_58a946f630f54c4d958159350edb91dd }}/webimage:${{ github.sha }}
+        tags: synsearch.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b869997e0594f92a7d60c52bfeec82a }}/webimage:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'syn-search-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_212d38ba78b84195ae646441adbff3dd }}
-        images: 'synsearch.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_58a946f630f54c4d958159350edb91dd }}/webimage:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_cfcee72b596449f882e5798e5ca97fc9 }}
+        images: 'synsearch.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b869997e0594f92a7d60c52bfeec82a }}/webimage:${{ github.sha }}'

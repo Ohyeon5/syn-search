@@ -13,7 +13,7 @@ COPY src/preprocessing /code/preprocessing
 RUN pip install --no-cache-dir --upgrade -e /code/preprocessing
 
 COPY src/backend /code/app
-COPY data/index/I20160906.index /code/llama-index
+COPY data/index/I20160920.index /code/llama-index
 
 ENV PORT=3100
 EXPOSE 3100
