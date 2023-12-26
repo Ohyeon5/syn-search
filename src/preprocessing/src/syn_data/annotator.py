@@ -73,7 +73,13 @@ def rxn_smi_to_desc(rxn_smi: str) -> str:
         + " to be "
         + " ".join([f"product_{ii}: {prod}" for ii, prod in enumerate(products)])
         + " in "
-        + " ".join([f"solvent_{ii}: {solv}" for ii, solv in enumerate(solvents)])
+        + " ".join(
+            [
+                f"solvent_{ii}: {solv}"
+                for ii, solv in enumerate(solvents)
+                if len(solv) > 0
+            ]
+        )
     )
 
 
