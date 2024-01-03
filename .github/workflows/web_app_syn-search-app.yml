@@ -31,6 +31,9 @@ jobs:
       with:
         push: true
         tags: synsearch.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b869997e0594f92a7d60c52bfeec82a }}/webimage:${{ github.sha }}
+        secrets: |
+          "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+          "OPENAI_API_ENDPOINT=${{ secrets.OPENAI_API_ENDPOINT }}"
         file: ./Dockerfile
 
   deploy:
