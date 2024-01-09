@@ -14,7 +14,7 @@ Develop a chat-based search platform using pre-trained Language Models (LMs) fro
 The platform will leverage the Retrieval Augmented Generation (RAG) approach to cross-reference and bias model responses towards accurate chemistry literature. [llama-index](https://gpt-index.readthedocs.io/en/latest/index.html) will be used to index the chemistry literature.
 The model is then deployed on a azure static web app. The backend is built with flask and deployed on azure app service.
 
-Chemistry experties information are going to be retrieved from PubChem, Reacxys, ChemArxiv, etc. Then, these dataset will be prepared as vector database for the RAG approach. The conditions to generate the optimal synthesis conditions for a given chemical synthesis name or reaction smart will be curated during the hackathon.
+Chemistry experties information are going to be retrieved from PubChem, Reaxys, ChemArxiv, etc. Then, these dataset will be prepared as vector database for the RAG approach. The conditions to generate the optimal synthesis conditions for a given chemical synthesis name or reaction smart will be curated during the hackathon.
 
 ### Llama 2
 In order to access the Llma 2 models, you need to request access from the [Meta website](https://ai.meta.com/resources/models-and-libraries/llama-downloads). Requests takes 1-2 days, so please submit the request prior to the usage date.
